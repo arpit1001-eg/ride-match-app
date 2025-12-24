@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ride Match</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; }
+        h1 { text-align: center; }
+        label { display: block; margin-top: 10px; }
+        input { width: 100%; padding: 6px; margin-top: 4px; }
+        button { margin-top: 15px; padding: 8px 16px; width: 100%; }
+        .error { color: red; margin-top: 10px; }
+        .info { color: #555; margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Ride Match (Prototype)</h1>
+
+    <form method="POST">
+        <label>Naam:</label>
+        <input type="text" name="name" placeholder="Apna naam">
+
+        <label>Source (area / landmark):</label>
+        <input type="text" name="source" placeholder="e.g. Ramkola bus stand">
+
+        <label>Destination:</label>
+        <input type="text" name="dest" placeholder="e.g. XYZ College">
+
+        <label>Time (HH:MM, 24-hour):</label>
+        <input type="time" name="time">
+
+        <button type="submit">Find Matches</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="info">
+        Total active ride requests: {{ rides_count }}
+    </div>
+    <div class="info">
+        Note: Ye sirf demo hai. Same source + destination + 30 min ke andar wali rides match hongi.
+    </div>
+</body>
+</html>

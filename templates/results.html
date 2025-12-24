@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ride Matches</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
+        h1, h2 { text-align: center; }
+        .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 4px; }
+        a { display: inline-block; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <h1>Ride Match Result</h1>
+
+    <div class="card">
+        <h2>Your Ride</h2>
+        <p><strong>Naam:</strong> {{ ride.name }}</p>
+        <p><strong>Source:</strong> {{ ride.source }}</p>
+        <p><strong>Destination:</strong> {{ ride.dest }}</p>
+        <p><strong>Time:</strong> {{ ride.time_str }}</p>
+    </div>
+
+    <h2>Possible Matches (30 min window)</h2>
+
+    {% if matches %}
+        {% for m in matches %}
+            <div class="card">
+                <p><strong>Naam:</strong> {{ m.name }}</p>
+                <p><strong>Source:</strong> {{ m.source }}</p>
+                <p><strong>Destination:</strong> {{ m.dest }}</p>
+                <p><strong>Time:</strong> {{ m.time_str }}</p>
+                <p style="font-size: 13px; color: #555;">(Prototype: yaha future me contact button / chat aayega)</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Koi match nahi mila abhi. Jaise jaise log add honge, matching chances badhenge.</p>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}">Nayi ride add karo</a>
+</body>
+</html>
