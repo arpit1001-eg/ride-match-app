@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+.venv/
+
+# OS/editor
+.DS_Store
+.vscode/
+
+# Local DB
+rides.db
+instance/

@@ -1,46 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Ride Match</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; }
-        h1 { text-align: center; }
-        label { display: block; margin-top: 10px; }
-        input { width: 100%; padding: 6px; margin-top: 4px; }
-        button { margin-top: 15px; padding: 8px 16px; width: 100%; }
-        .error { color: red; margin-top: 10px; }
-        .info { color: #555; margin-top: 10px; font-size: 14px; }
-    </style>
-</head>
-<body>
-    <h1>Ride Match (Prototype)</h1>
+{% extends "base.html" %}
+{% block title %}All Rides{% endblock %}
 
-    <form method="POST">
-        <label>Naam:</label>
-        <input type="text" name="name" placeholder="Apna naam">
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">All ride requests</h2>
+</div>
 
-        <label>Source (area / landmark):</label>
-        <input type="text" name="source" placeholder="e.g. Ramkola bus stand">
-
-        <label>Destination:</label>
-        <input type="text" name="dest" placeholder="e.g. XYZ College">
-
-        <label>Time (HH:MM, 24-hour):</label>
-        <input type="time" name="time">
-
-        <button type="submit">Find Matches</button>
+<div class="card mb-3">
+  <div class="card-body">
+    <form method="GET" class="row g-2">
+      <div class="col-md-4">
+        <label class="form-label">From</label>
+        <input class="form-control" type="text" name="origin"
+               value="{{ request.args.get('origin','') }}">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">To</label>
+        <input class="form-control" type="text" name="destination"
+               value="{{ request.args.get('destination','') }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Date</label>
+        <input class="form-control" type="date" name="date"
+               value="{{ request.args.get('date','') }}">
+      </div>
+      <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Go</button>
+      </div>
+      <div class="col-12 mt-1">
+        <a href="{{ url_for('index') }}">Clear filters</a>
+      </div>
     </form>
+  </div>
+</div>
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
+{% if rides %}
+  {% for ride in rides %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <span class="badge badge-route">
+              {{ ride.origin }} → {{ ride.destination }}
+            </span>
+            <div class="mt-1">
+              <span class="ride-card-icon">⏰</span>{{ ride.time_str }}
+              <span class="ms-2 text-muted small">{{ date_label(ride.date) }}</span>
+            </div>
+          </div>
+          <div class="text-end">
+            <div class="small text-muted">
+              {{ ride.user.name }}
+              {% if ride.user.whatsapp %}
+                · {{ ride.user.whatsapp }}
+              {% endif %}
+            </div>
+            <div class="small text-muted">
+              {{ ride.created_at.strftime("%Y-%m-%d %H:%M") }}
+            </div>
+          </div>
+        </div>
 
-    <div class="info">
-        Total active ride requests: {{ rides_count }}
+        <div class="mt-2">
+          {% if current_user and current_user.id != ride.user_id %}
+            {% set my_req = get_user_request_for_ride(current_user.id, ride) %}
+            {% if my_req and my_req.status == "pending" %}
+              <span class="badge bg-warning text-dark">Request pending</span>
+            {% elif my_req and my_req.status == "accepted" %}
+              <span class="badge bg-success">Request accepted</span>
+            {% elif my_req and my_req.status == "rejected" %}
+              <span class="badge bg-danger">Request rejected</span>
+            {% else %}
+              <form method="POST"
+                    action="{{ url_for('request_join', ride_id=ride.id) }}"
+                    class="d-inline">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                  Request to join
+                </button>
+              </form>
+            {% endif %}
+          {% else %}
+            <span class="text-muted small">This is your ride.</span>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    <div class="info">
-        Note: Ye sirf demo hai. Same source + destination + 30 min ke andar wali rides match hongi.
-    </div>
-</body>
-</html>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info">No rides found. Try changing filters or create a new ride.</div>
+{% endif %}
+{% endblock %}
+

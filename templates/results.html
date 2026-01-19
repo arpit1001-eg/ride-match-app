@@ -1,42 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Ride Matches</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
-        h1, h2 { text-align: center; }
-        .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 4px; }
-        a { display: inline-block; margin-top: 15px; }
-    </style>
-</head>
-<body>
-    <h1>Ride Match Result</h1>
+{% extends "base.html" %}
+{% block title %}Ride Matches{% endblock %}
 
-    <div class="card">
-        <h2>Your Ride</h2>
-        <p><strong>Naam:</strong> {{ ride.name }}</p>
-        <p><strong>Source:</strong> {{ ride.source }}</p>
-        <p><strong>Destination:</strong> {{ ride.dest }}</p>
-        <p><strong>Time:</strong> {{ ride.time_str }}</p>
+{% block content %}
+<h2 class="mb-3">Ride matches</h2>
+
+{% if new_ride %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <strong>Your ride:</strong>
+      {{ new_ride.origin }} → {{ new_ride.destination }}
+      at {{ new_ride.time_str }}
+      <span class="ms-2 text-muted small">{{ date_label(new_ride.date) }}</span>
     </div>
+  </div>
+{% endif %}
 
-    <h2>Possible Matches (30 min window)</h2>
+<h5>Matching rides</h5>
 
-    {% if matches %}
-        {% for m in matches %}
-            <div class="card">
-                <p><strong>Naam:</strong> {{ m.name }}</p>
-                <p><strong>Source:</strong> {{ m.source }}</p>
-                <p><strong>Destination:</strong> {{ m.dest }}</p>
-                <p><strong>Time:</strong> {{ m.time_str }}</p>
-                <p style="font-size: 13px; color: #555;">(Prototype: yaha future me contact button / chat aayega)</p>
+{% if matches and matches|length > 0 %}
+  {% for ride in matches %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <span class="badge badge-route">
+              {{ ride.origin }} → {{ ride.destination }}
+            </span>
+            <div class="mt-1">
+              <span class="ride-card-icon">⏰</span>{{ ride.time_str }}
+              <span class="ms-2 text-muted small">{{ date_label(ride.date) }}</span>
             </div>
-        {% endfor %}
-    {% else %}
-        <p>Koi match nahi mila abhi. Jaise jaise log add honge, matching chances badhenge.</p>
-    {% endif %}
+          </div>
+          <div class="text-end">
+            <div class="small text-muted">
+              {{ ride.user.name }}
+              {% if ride.user.whatsapp %}
+                · {{ ride.user.whatsapp }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
 
-    <a href="{{ url_for('index') }}">Nayi ride add karo</a>
-</body>
-</html>
+        <div class="mt-2">
+          {% if current_user and current_user.id != ride.user_id %}
+            <form method="POST"
+                  action="{{ url_for('request_join', ride_id=ride.id) }}"
+                  class="d-inline">
+              <button type="submit" class="btn btn-sm btn-outline-primary">
+                Request to join
+              </button>
+            </form>
+          {% else %}
+            <span class="text-muted small">This is your ride.</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info">No matching rides found right now.</div>
+{% endif %}
+
+<a href="{{ url_for('create_ride') }}" class="btn btn-primary mt-3">Create another ride</a>
+{% endblock %}
+

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Ride Requests{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Requests for your rides</h2>
+
+{% if requests %}
+  {% for req in requests %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <div>
+              <span class="badge badge-route">
+                {{ req.ride.origin }} → {{ req.ride.destination }}
+              </span>
+              <span class="ms-2 small text-muted">
+                {{ req.ride.time_str }} • {{ date_label(req.ride.date) }}
+              </span>
+            </div>
+            <div class="small text-muted mt-1">
+              Requested by {{ req.requester.name }}
+              {% if req.requester.whatsapp %}
+                ({{ req.requester.whatsapp }})
+              {% endif %}
+              • {{ req.created_at.strftime("%Y-%m-%d %H:%M") }}
+            </div>
+          </div>
+          <div class="text-end">
+            {% if req.status == "pending" %}
+              <span class="badge bg-warning text-dark mb-2">Pending</span><br>
+              <form method="POST"
+                    action="{{ url_for('accept_request', req_id=req.id) }}"
+                    class="d-inline">
+                <button class="btn btn-sm btn-success">Accept</button>
+              </form>
+              <form method="POST"
+                    action="{{ url_for('reject_request', req_id=req.id) }}"
+                    class="d-inline">
+                <button class="btn btn-sm btn-outline-danger">Reject</button>
+              </form>
+            {% elif req.status == "accepted" %}
+              <span class="badge bg-success">Accepted</span>
+            {% else %}
+              <span class="badge bg-danger">Rejected</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info">
+    No requests yet. When others click “Request to join” on your rides, they will appear here.
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}New Ride{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <h2 class="mb-3">Create a ride</h2>
+    <div class="card">
+      <div class="card-body">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">From</label>
+            <input class="form-control" type="text" name="origin" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">To</label>
+            <input class="form-control" type="text" name="destination" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input class="form-control" type="date" name="date" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Time</label>
+            <input class="form-control" type="time" name="time" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Post ride & find matches</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
