@@ -2,10 +2,10 @@
 {% block title %}New Ride{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center fade-soft">
   <div class="col-md-8 col-lg-6">
-    <h2 class="mb-3">Create a ride</h2>
-    <div class="card">
+    <h2 class="mb-3 section-title">Create a ride</h2>
+    <div class="card form-shell">
       <div class="card-body">
         <form method="POST">
           <div class="mb-3">
@@ -24,11 +24,14 @@
             <label class="form-label">Time</label>
             <input class="form-control" type="time" name="time" required>
           </div>
-          <button type="submit" class="btn btn-primary w-100">Post ride & find matches</button>
+          <button type="submit" class="btn btn-primary w-100">
+            Post ride &amp; find matches
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
+
 

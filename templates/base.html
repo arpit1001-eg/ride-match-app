@@ -1,79 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Ride Match{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-    <style>
-        body {
-            background-color: #f5f5f5;
-        }
-        .navbar-brand {
-            font-weight: 600;
-        }
-        .ride-card-icon {
-            font-size: 1.1rem;
-            margin-right: 4px;
-        }
-        .badge-route {
-            background-color: #e9ecef;
-            color: #495057;
-            font-weight: 500;
-        }
-        .floating-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            z-index: 1000;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>{% block title %}Ride Match{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+
+  <style>
+    /* Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap');
+
+    :root {
+      --bg-main: #f5f3ff;           /* solid very light purple */
+      --bg-card: #ffffff;
+      --bg-chip: #eef2ff;
+      --accent: #7c3aed;
+      --accent-soft: #c4b5fd;
+      --accent-warm: #f97316;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 980px;
+    }
+
+    /* Navbar */
+    .navbar {
+      border-radius: 18px;
+      padding: 0.75rem 1rem;
+      margin-top: 14px;
+    }
+
+    .navbar,
+    .bg-white {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .navbar-brand {
+      font-family: "Sora", system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      background: linear-gradient(120deg, var(--accent), var(--accent-warm));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .navbar-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5 {
+      font-family: "Sora", system-ui, sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .section-title {
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, var(--accent), var(--accent-warm));
+      transition: width 0.28s ease-out;
+    }
+
+    .section-title:hover::after {
+      width: 100%;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(120deg, var(--accent), var(--accent-warm));
+      border: none;
+      border-radius: var(--radius-pill);
+      padding-inline: 1.4rem;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.32);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 20px 45px rgba(124, 58, 237, 0.46);
+    }
+
+    .btn-outline-primary {
+      border-radius: var(--radius-pill);
+      border-color: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: var(--accent-soft);
+      border-color: var(--accent-soft);
+      color: #fff;
+    }
+
+    .btn-outline-secondary {
+      border-radius: var(--radius-pill);
+      border-color: var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    .btn-outline-secondary:hover {
+      background-color: #e5e7eb;
+      color: var(--text-main);
+    }
+
+    .btn-success,
+    .btn-danger,
+    .btn-outline-danger {
+      border-radius: var(--radius-pill);
+    }
+
+    /* Cards */
+    .card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      background-color: var(--bg-card);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-body {
+      padding: 1.25rem 1.4rem;
+    }
+
+    .filter-card,
+    .form-shell {
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-soft);
+    }
+
+    /* Hover float */
+    .card.fade-soft:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 55px rgba(15, 23, 42, 0.16);
+    }
+
+    /* Badges / route chips */
+    .badge-route {
+      background-color: var(--bg-chip);
+      color: var(--accent);
+      font-weight: 600;
+      border-radius: var(--radius-pill);
+      padding: 0.35rem 0.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    .ride-card-icon {
+      font-size: 1.05rem;
+      margin-right: 6px;
+      color: var(--accent);
+    }
+
+    .text-muted {
+      color: var(--text-muted) !important;
+    }
+
+    /* Alerts */
+    .alert {
+      border-radius: var(--radius-lg);
+      border: none;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.09);
+    }
+
+    .alert-info {
+      background: linear-gradient(120deg, #e0f2fe, #e0f2fe);
+      color: #0f172a;
+    }
+
+    .alert-success {
+      background: linear-gradient(120deg, #dcfce7, #bbf7d0);
+      color: #166534;
+    }
+
+    .alert-danger {
+      background: linear-gradient(120deg, #fee2e2, #fecaca);
+      color: #991b1b;
+    }
+
+    /* Floating new ride button */
+    .floating-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1000;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 18px 40px rgba(124, 58, 237, 0.55);
+      animation: floatPulse 2.4s ease-in-out infinite;
+    }
+
+    .floating-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    @keyframes floatPulse {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    /* Soft fade animation */
+    .fade-soft {
+      opacity: 0;
+      transform: translateY(6px);
+      animation: fadeUpSoft 0.35s ease-out forwards;
+    }
+
+    @keyframes fadeUpSoft {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .navbar {
+        border-radius: 0 0 16px 16px;
+        margin-top: 0;
+      }
+      .floating-btn {
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-3">
-    <div class="container">
-        <a class="navbar-brand" href="{{ url_for('index') }}">Ride Match</a>
-        <div class="d-flex">
-            {% if current_user %}
-                <span class="navbar-text me-3">
-                    {{ current_user.name }}
-                    {% if current_user.whatsapp %}
-                        ({{ current_user.whatsapp }})
-                    {% endif %}
-                </span>
-                <a href="{{ url_for('my_requests') }}" class="btn btn-outline-secondary me-2">Requests</a>
-                <a href="{{ url_for('create_ride') }}" class="btn btn-outline-primary me-2">New Ride</a>
-                <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}" class="btn btn-outline-primary me-2">Login</a>
-                <a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
-            {% endif %}
-        </div>
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Ride Match</a>
+    <div class="d-flex">
+      {% if current_user %}
+        <span class="navbar-text me-3">
+          {{ current_user.name }}
+          {% if current_user.whatsapp %}
+            ({{ current_user.whatsapp }})
+          {% endif %}
+        </span>
+        <a href="{{ url_for('my_requests') }}" class="btn btn-outline-secondary me-2">Requests</a>
+        <a href="{{ url_for('create_ride') }}" class="btn btn-outline-primary me-2">New Ride</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-outline-primary me-2">Login</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
+      {% endif %}
     </div>
+  </div>
 </nav>
 
 <div class="container mb-5">
-    {% with messages = get_flashed_messages(with_categories=True) %}
-      {% if messages %}
-        {% for category, msg in messages %}
-          <div class="alert alert-{{ 'danger' if category=='error' else 'success' }} alert-dismissible fade show" role="alert">
-              {{ msg }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ 'danger' if category=='error' else 'success' }} alert-dismissible fade show fade-soft" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 </div>
 
 {% if current_user %}
 <a href="{{ url_for('create_ride') }}" class="btn btn-primary rounded-circle shadow floating-btn">
-    +
+  +
 </a>
 {% endif %}
 

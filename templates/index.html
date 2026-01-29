@@ -2,11 +2,11 @@
 {% block title %}All Rides{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2 class="mb-0">All ride requests</h2>
+<div class="d-flex justify-content-between align-items-center mb-3 fade-soft">
+  <h2 class="mb-0 section-title">All ride requests</h2>
 </div>
 
-<div class="card mb-3">
+<div class="card mb-3 filter-card fade-soft">
   <div class="card-body">
     <form method="GET" class="row g-2">
       <div class="col-md-4">
@@ -36,7 +36,7 @@
 
 {% if rides %}
   {% for ride in rides %}
-    <div class="card mb-2">
+    <div class="card mb-2 fade-soft">
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
@@ -87,7 +87,8 @@
     </div>
   {% endfor %}
 {% else %}
-  <div class="alert alert-info">No rides found. Try changing filters or create a new ride.</div>
+  <div class="alert alert-info fade-soft">
+    No rides found. Try changing filters or create a new ride.
+  </div>
 {% endif %}
 {% endblock %}
-

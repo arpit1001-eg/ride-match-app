@@ -2,11 +2,11 @@
 {% block title %}Ride Requests{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">Requests for your rides</h2>
+<h2 class="mb-3 fade-soft">Requests for your rides</h2>
 
 {% if requests %}
   {% for req in requests %}
-    <div class="card mb-2">
+    <div class="card mb-2 fade-soft">
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
@@ -50,8 +50,9 @@
     </div>
   {% endfor %}
 {% else %}
-  <div class="alert alert-info">
+  <div class="alert alert-info fade-soft">
     No requests yet. When others click “Request to join” on your rides, they will appear here.
   </div>
 {% endif %}
 {% endblock %}
+

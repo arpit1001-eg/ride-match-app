@@ -2,10 +2,10 @@
 {% block title %}Ride Matches{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">Ride matches</h2>
+<h2 class="mb-3 fade-soft section-title">Ride matches</h2>
 
 {% if new_ride %}
-  <div class="card mb-3">
+  <div class="card mb-3 fade-soft">
     <div class="card-body">
       <strong>Your ride:</strong>
       {{ new_ride.origin }} → {{ new_ride.destination }}
@@ -15,11 +15,11 @@
   </div>
 {% endif %}
 
-<h5>Matching rides</h5>
+<h5 class="fade-soft">Matching rides</h5>
 
 {% if matches and matches|length > 0 %}
   {% for ride in matches %}
-    <div class="card mb-2">
+    <div class="card mb-2 fade-soft">
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
@@ -58,9 +58,10 @@
     </div>
   {% endfor %}
 {% else %}
-  <div class="alert alert-info">No matching rides found right now.</div>
+  <div class="alert alert-info fade-soft">No matching rides found right now.</div>
 {% endif %}
 
-<a href="{{ url_for('create_ride') }}" class="btn btn-primary mt-3">Create another ride</a>
+<a href="{{ url_for('create_ride') }}" class="btn btn-primary mt-3 fade-soft">
+  Create another ride
+</a>
 {% endblock %}
-
