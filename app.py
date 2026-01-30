@@ -14,8 +14,16 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+# DB INIT (for Render + local)
 
-# -------------- MODELS --------------
+def init_db():
+    with app.app_context():
+        db.create_all()
+
+# call on import so gunicorn/Render pe bhi tables ban jayein
+init_db()
+
+# MODELS
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,8 +57,7 @@ class RideRequest(db.Model):
     ride = db.relationship("Ride", backref="requests", lazy=True)
     requester = db.relationship("User", foreign_keys=[requester_id])
 
-
-# -------------- HELPERS --------------
+# HELPERS
 
 def parse_time(time_str):
     return datetime.strptime(time_str, "%H:%M").time()
@@ -119,8 +126,7 @@ def get_user_request_for_ride(user_id, ride):
             return r
     return None
 
-
-# -------------- AUTH ROUTES --------------
+# AUTH ROUTES
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -179,8 +185,7 @@ def logout():
     flash("Logged out.", "success")
     return redirect(url_for("login"))
 
-
-# -------------- RIDE ROUTES --------------
+# RIDE ROUTES
 
 @app.route("/", methods=["GET", "POST"])
 @login_required_view
@@ -376,10 +381,7 @@ def reject_request(req_id):
     flash(f"Rejected request from {req.requester.name}.", "success")
     return redirect(url_for("my_requests"))
 
-
-# -------------- MAIN --------------
+# MAIN
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
